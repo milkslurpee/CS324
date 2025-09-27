@@ -1,7 +1,9 @@
 /*
  * tsh - A tiny shell program with job control
  *
- * <Put your name and login ID here>
+ * Jack Suorsa
+ * I'm not sure what you guys want with "Login ID", but my net id is js2485
+ *
  */
 #include <stdio.h>
 #include <stdlib.h>
