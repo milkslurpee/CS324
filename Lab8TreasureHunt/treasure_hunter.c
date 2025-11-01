@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
 	}
 	else{
 		char* server = argv[1];
-		int port = atoi(argv[2]);
+		char* port_string = argv[2];
+		int port = atoi(port_string);
 		int level = atoi(argv[3]);
 		int seed = atoi(argv[4]);
 		
@@ -37,6 +38,11 @@ int main(int argc, char *argv[]) {
 		memcpy(&message[6], &user_seed, 2); 
 
 		print_bytes(message, 8);
+
+		struct addrinfo hints;
+		memset(&hints, 0, sizeof(struct addrinfo));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_DGRAM;
 	}
 }
 
