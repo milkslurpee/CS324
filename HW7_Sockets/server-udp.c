@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	unsigned short port = atoi(argv[portindex]);
-	int sock_type = SOCK_STREAM;
+	int sock_type = SOCK_DGRAM;
 
 
 	/* SECTION A - populate address structures */
@@ -72,61 +72,46 @@ int main(int argc, char *argv[]) {
 
 
 	/* SECTION C - interact with clients; receive and send messages */
-	listen(sfd, 100);
-	while (1) {
+
 	// Read datagrams and echo them back to sender
-	socklen_t addr_len = sizeof(struct sockaddr_storage);
-	struct sockaddr_storage remote_addr_ss;
-	struct sockaddr *remote_addr = (struct sockaddr *)&remote_addr_ss;
-	char remote_ip[INET6_ADDRSTRLEN];
-	unsigned short remote_port;
-	int client_sfd = accept(sfd, remote_addr, &addr_len);
-	sleep(5);
+	while (1) {
+		char buf[BUF_SIZE];
 
-	if (client_sfd < 0) {
-        perror("accept");
-        exit(EXIT_FAILURE);
-    }
-    
+		// Remote address information is stored in remote_addr_ss.  See notes
+		// above for local_addr_ss and local_addr_ss.
+		struct sockaddr_storage remote_addr_ss;
+		struct sockaddr *remote_addr = (struct sockaddr *)&remote_addr_ss;
+		char remote_ip[INET6_ADDRSTRLEN];
+		unsigned short remote_port;
 
-	parse_sockaddr(remote_addr, remote_ip, &remote_port);
-		while (1) {
-			char buf[BUF_SIZE];
+		// Read bytes from remote socket using recvfrom().  The remote
+		// IP address and port from which the message was sent is
+		// stored in the struct sockaddr_storage referenced by
+		// remote_addr.
+		//
+		// NOTE: addr_len needs to be initialized before every call to
+		// recvfrom().  See the man page for recvfrom().
+		socklen_t addr_len = sizeof(struct sockaddr_storage);
+		ssize_t nread = recvfrom(sfd, buf, 1, 0,
+				remote_addr, &addr_len);
+		sleep(5);
+		if (nread < 0) {
+			perror("receiving message");
+			exit(EXIT_FAILURE);
+		}
 
-			// Remote address information is stored in remote_addr_ss.  See notes
-			// above for local_addr_ss and local_addr_ss.
+		// Extract the IP address and port from the struct referred to
+		// by remote_addr using parse_sockaddr(), and store them in the
+		// locations referred to by remote_ip and &remote_port.  This
+		// is a little messy, so we use the helper function
+		// parse_sockaddr(), which is defined in ../code/sockhelper.c.
+		parse_sockaddr(remote_addr, remote_ip, &remote_port);
+		printf("Received %zd bytes from %s:%d\n",
+				nread, remote_ip, remote_port);
 
-
-			// Read bytes from remote socket using recvfrom().  The remote
-			// IP address and port from which the message was sent is
-			// stored in the struct sockaddr_storage referenced by
-			// remote_addr.
-			//
-			// NOTE: addr_len needs to be initialized before every call to
-			// recvfrom().  See the man page for recvfrom().
-			ssize_t nread = recv(client_sfd, buf, BUF_SIZE, 0);
-	//		sleep(5);
-			if (nread < 0) {
-				perror("receiving message");
-				exit(EXIT_FAILURE);
-			} else if (nread == 0) {  // Client disconnected
-				close(client_sfd);
-				break;  // Break inner loop, wait for new client
-			}
-
-			// Extract the IP address and port from the struct referred to
-			// by remote_addr using parse_sockaddr(), and store them in the
-			// locations referred to by remote_ip and &remote_port.  This
-			// is a little messy, so we use the helper function
-			// parse_sockaddr(), which is defined in ../code/sockhelper.c.
-			
-			printf("Received %zd bytes from %s:%d\n",
-					nread, remote_ip, remote_port);
-
-			// Return bytes to remote socket using sendto().
-			if (send(client_sfd, buf, nread, 0) < 0) {
-				perror("sending response");
-			}
+		// Return bytes to remote socket using sendto().
+		if (sendto(sfd, buf, nread, 0, remote_addr, addr_len) < 0) {
+			perror("sending response");
 		}
 	}
 }

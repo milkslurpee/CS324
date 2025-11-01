@@ -170,64 +170,39 @@ int main(int argc, char *argv[]) {
 
 	// Send remaining command-line arguments as separate
 	// datagrams, and read responses from server.
+	for (int j = hostindex + 2; j < argc; j++) {
+		// buf will hold the bytes we read from the socket.
+		char buf[BUF_SIZE];
 
+		size_t len = strlen(argv[j]);
 
-	unsigned char buffer[4096];
-	size_t tot_bytes_read = 0;
-	while (tot_bytes_read < 4096) {
-		size_t remaining_bytes = sizeof(buffer) - tot_bytes_read;
-		size_t bytes_to_read = (512 < remaining_bytes) ? 512 : remaining_bytes;
-		size_t bytes_read = read(STDIN_FILENO, buffer + tot_bytes_read, bytes_to_read);
-		if (bytes_read == 0) {
-            break; 
-        }
-		else if (bytes_read < 0){
-			perror("read");
-			exit(EXIT_FAILURE);
+		// Check for buffer overflow.
+		if (len > BUF_SIZE) {
+			fprintf(stderr,
+					"Ignoring long message in argument %d\n", j);
+			continue;
 		}
-		tot_bytes_read += bytes_read;
-	}
 
-	size_t tot_bytes_sent = 0;
-	while (tot_bytes_sent < tot_bytes_read) {
-		size_t remaining_bytes = tot_bytes_read - tot_bytes_sent;
-		size_t bytes_to_send = (512 < remaining_bytes) ? 512 : remaining_bytes;
-		ssize_t bytes_sent = send(sfd, buffer + tot_bytes_sent, bytes_to_send, 0);
+		// Send bytes to remote socket using send().
+		ssize_t nwritten = send(sfd, argv[j], len, 0);
+//		ssize_t nwritten = sendto(sfd, argv[j], len, 0, remote_addr, addr_len);
 		
-		if (bytes_sent < 0) {
+		if (nwritten < 0) {
 			perror("send");
 			exit(EXIT_FAILURE);
 		}
-		
-		tot_bytes_sent += bytes_sent;
+		printf("Sent %zd bytes: %s\n", len, argv[j]);
+
+		// Read bytes from remote socket using recv().
+// 		ssize_t nread = recv(sfd, buf, BUF_SIZE, 0);
+// 		buf[nread] = '\0';
+// 		if (nread < 0) {
+// 			perror("read");
+// 			exit(EXIT_FAILURE);
+// 		}
+// 		printf("Received %zd bytes: %s\n", nread, buf);
+
 	}
-
-	// After sending the request, receive the server's response
-	unsigned char response_buffer[16384];
-	size_t tot_bytes_received = 0;
-
-	while (tot_bytes_received < 16384) {
-		size_t remaining_space = sizeof(response_buffer) - tot_bytes_received;
-		size_t bytes_to_receive = (512 < remaining_space) ? 512 : remaining_space;
-		ssize_t bytes_received = recv(sfd, response_buffer + tot_bytes_received, bytes_to_receive, 0);
-		
-		if (bytes_received == 0) {
-			break; // Server closed the connection
-		} else if (bytes_received < 0) {
-			perror("recv");
-			exit(EXIT_FAILURE);
-		}
-		
-		tot_bytes_received += bytes_received;
-	}
-
-	// Write the response to standard output
-	ssize_t bytes_written = write(STDOUT_FILENO, response_buffer, tot_bytes_received);
-	if (bytes_written < 0) {
-		perror("write");
-		exit(EXIT_FAILURE);
-	}
-
 
 	exit(EXIT_SUCCESS);
 }
