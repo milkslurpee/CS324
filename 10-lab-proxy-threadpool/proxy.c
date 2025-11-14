@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "sockhelper.h"
+#include <netdb.h>
 
 /* Recommended max object size */
 #define MAX_OBJECT_SIZE 102400
@@ -17,11 +18,13 @@ int complete_request_received(char *);
 void parse_request(char *, char *, char *, char *, char *);
 void test_parser();
 void print_bytes(unsigned char *, int);
+int open_sf(int port);
+void handle_client(int client_fd);
 
 
 int main(int argc, char *argv[])
 {
-	//test_parser();
+	//test_parser(); ,
 	printf("%s\n", user_agent_hdr);
 	int port = atoi(argv[1]);
 	int server_fd = open_sf(port);
@@ -151,29 +154,82 @@ int open_sf(int port){
 	return sockfd;
 }
 
-int handle_client(int socket){
-	char buffer[1024]; 
+void handle_client(int client_fd){
+	char req_buffer[1024]; 
+	req_buffer[0] = '\0';
 	int bytes_read = 0;
 	int n = 0;
 	char method[16], hostname[64], port[8], path[256];
-	while (complete_request_received(buffer) == 0){
-		n = recv(socket, buffer + bytes_read, 1024 - bytes_read, 0);
+	while (complete_request_received(req_buffer) == 0){
+		n = recv(client_fd, req_buffer + bytes_read, 1024 - bytes_read, 0);
 		if (n < 0){
-			close(socket);
-			return -1;
+			close(client_fd);
+			return;
 		}else if (n == 0) {
             break;
         }
 		bytes_read += n;
-        buffer[bytes_read] = '\0';
-		if (complete_request_received(buffer) == 0) break;
+        req_buffer[bytes_read] = '\0';
+		if (complete_request_received(req_buffer)) break;
 	}
 
-	buffer[bytes_read] = '\0';
-	parse_request(buffer, method, hostname, port, path);
-	print_bytes(buffer, bytes_read);
-	printf("%s\n, %s\n, %s\n, %s\n", method, hostname, port, path);
-	close(socket);
+	req_buffer[bytes_read] = '\0';
+	parse_request(req_buffer, method, hostname, port, path);
+	print_bytes((unsigned char *)req_buffer, bytes_read);
+	printf("METHOD: %s\n", method);
+	printf("HOSTNAME: %s\n", hostname);
+	printf("PORT: %s\n", port);
+	printf("PATH: %s\n", path);
+	
+	char request[1024];
+
+	sprintf(request, "%s %s HTTP/1.0\r\n", method, path);
+
+	if (strcmp(port, "80") == 0) sprintf(request + strlen(request), "Host: %s\r\n", hostname);
+	else sprintf(request + strlen(request), "Host: %s:%s\r\n", hostname, port);
+
+	sprintf(request + strlen(request),"%s\r\n", user_agent_hdr);
+	sprintf(request + strlen(request), "Connection: close\r\n");
+	sprintf(request + strlen(request), "Proxy-Connection: close\r\n");
+
+	struct addrinfo hints, *response;
+	int status;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	status = getaddrinfo(hostname, port, &hints, &response);
+
+	if (status != 0) return;
+
+	int sock_fd = socket(response->ai_family, response->ai_socktype, response->ai_protocol);
+	if (sock_fd < 0) {
+		freeaddrinfo(response);
+		close(client_fd);
+		return;
+	}
+	if (connect(sock_fd, response->ai_addr, response->ai_addrlen) < 0) {
+        freeaddrinfo(response);
+        close(client_fd);
+        return;
+	}
+
+	int bytes_sent = 0;
+	bytes_sent = send(sock_fd, request, strlen(request), 0);
+	if (bytes_sent < 0) {
+		freeaddrinfo(response);
+        close(client_fd);
+        return;
+	}
+
+	char res_buffer[1024];
+	int bytes_received;
+	while ((bytes_received = recv(sock_fd, res_buffer, sizeof(res_buffer), 0)) > 0) {
+		print_bytes((unsigned char *)res_buffer, bytes_received);
+		send(client_fd, res_buffer, bytes_received, 0);
+	}
+
+	close(client_fd);
+	close(sock_fd);
 }
 
 
