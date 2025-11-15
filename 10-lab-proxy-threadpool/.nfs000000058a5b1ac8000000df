@@ -1,0 +1,107 @@
+execve("./proxy", ["./proxy", "46806"], 0x7ffe106d06e8 /* 28 vars */) = 0
+brk(NULL)                               = 0x5597edf30000
+arch_prctl(0x3001 /* ARCH_??? */, 0x7fff2d0fd3d0) = -1 EINVAL (Invalid argument)
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f6f31771000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+newfstatat(3, "", {st_mode=S_IFREG|0644, st_size=115456, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 115456, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f6f31754000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P\237\2\0\0\0\0\0"..., 832) = 832
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 784, 64) = 784
+pread64(3, "\4\0\0\0 \0\0\0\5\0\0\0GNU\0\2\0\0\300\4\0\0\0\3\0\0\0\0\0\0\0"..., 48, 848) = 48
+pread64(3, "\4\0\0\0\24\0\0\0\3\0\0\0GNU\0O{\f\225\\=\201\327\312\301P\32$\230\266\235"..., 68, 896) = 68
+newfstatat(3, "", {st_mode=S_IFREG|0755, st_size=2220400, ...}, AT_EMPTY_PATH) = 0
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 784, 64) = 784
+mmap(NULL, 2264656, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f6f3152b000
+mprotect(0x7f6f31553000, 2023424, PROT_NONE) = 0
+mmap(0x7f6f31553000, 1658880, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x7f6f31553000
+mmap(0x7f6f316e8000, 360448, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1bd000) = 0x7f6f316e8000
+mmap(0x7f6f31741000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x215000) = 0x7f6f31741000
+mmap(0x7f6f31747000, 52816, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f6f31747000
+close(3)                                = 0
+mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f6f31528000
+arch_prctl(ARCH_SET_FS, 0x7f6f31528740) = 0
+set_tid_address(0x7f6f31528a10)         = 1462079
+set_robust_list(0x7f6f31528a20, 24)     = 0
+rseq(0x7f6f315290e0, 0x20, 0, 0x53053053) = 0
+mprotect(0x7f6f31741000, 16384, PROT_READ) = 0
+mprotect(0x5597da938000, 4096, PROT_READ) = 0
+mprotect(0x7f6f317ab000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+munmap(0x7f6f31754000, 115456)          = 0
+newfstatat(1, "", {st_mode=S_IFCHR|0666, st_rdev=makedev(0x1, 0x3), ...}, AT_EMPTY_PATH) = 0
+ioctl(1, TCGETS, 0x7fff2d0fd1e0)        = -1 ENOTTY (Inappropriate ioctl for device)
+getrandom("\x0d\x04\x3e\x1f\x71\x03\x42\xd2", 8, GRND_NONBLOCK) = 8
+brk(NULL)                               = 0x5597edf30000
+brk(0x5597edf51000)                     = 0x5597edf51000
+socket(AF_INET, SOCK_STREAM, IPPROTO_IP) = 3
+setsockopt(3, SOL_SOCKET, SO_REUSEPORT, [1], 4) = 0
+bind(3, {sa_family=AF_INET, sin_port=htons(46806), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+listen(3, 10)                           = 0
+rt_sigaction(SIGRT_1, {sa_handler=0x7f6f315bc870, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_RESTART|SA_SIGINFO, sa_restorer=0x7f6f3156d520}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f30d27000
+mprotect(0x7f6f30d28000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f31527910, parent_tid=0x7f6f31527910, exit_signal=0, stack=0x7f6f30d27000, stack_size=0x7fff00, tls=0x7f6f31527640} => {parent_tid=[1462080]}, 88) = 1462080
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f30526000
+mprotect(0x7f6f30527000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f30d26910, parent_tid=0x7f6f30d26910, exit_signal=0, stack=0x7f6f30526000, stack_size=0x7fff00, tls=0x7f6f30d26640} => {parent_tid=[1462081]}, 88) = 1462081
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2fd25000
+mprotect(0x7f6f2fd26000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f30525910, parent_tid=0x7f6f30525910, exit_signal=0, stack=0x7f6f2fd25000, stack_size=0x7fff00, tls=0x7f6f30525640} => {parent_tid=[1462082]}, 88) = 1462082
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2f524000
+mprotect(0x7f6f2f525000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f2fd24910, parent_tid=0x7f6f2fd24910, exit_signal=0, stack=0x7f6f2f524000, stack_size=0x7fff00, tls=0x7f6f2fd24640} => {parent_tid=[1462083]}, 88) = 1462083
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2ed23000
+mprotect(0x7f6f2ed24000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f2f523910, parent_tid=0x7f6f2f523910, exit_signal=0, stack=0x7f6f2ed23000, stack_size=0x7fff00, tls=0x7f6f2f523640} => {parent_tid=[1462084]}, 88) = 1462084
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2e522000
+mprotect(0x7f6f2e523000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f2ed22910, parent_tid=0x7f6f2ed22910, exit_signal=0, stack=0x7f6f2e522000, stack_size=0x7fff00, tls=0x7f6f2ed22640} => {parent_tid=[1462085]}, 88) = 1462085
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2dd21000
+mprotect(0x7f6f2dd22000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f2e521910, parent_tid=0x7f6f2e521910, exit_signal=0, stack=0x7f6f2dd21000, stack_size=0x7fff00, tls=0x7f6f2e521640} => {parent_tid=[1462086]}, 88) = 1462086
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+mmap(NULL, 8392704, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f6f2d520000
+mprotect(0x7f6f2d521000, 8388608, PROT_READ|PROT_WRITE) = 0
+rt_sigprocmask(SIG_BLOCK, ~[], [], 8)   = 0
+clone3({flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, child_tid=0x7f6f2dd20910, parent_tid=0x7f6f2dd20910, exit_signal=0, stack=0x7f6f2d520000, stack_size=0x7fff00, tls=0x7f6f2dd20640} => {parent_tid=[1462087]}, 88) = 1462087
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+accept(3, {sa_family=AF_INET, sin_port=htons(53296), sin_addr=inet_addr("127.0.0.1")}, [16]) = 4
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53306), sin_addr=inet_addr("127.0.0.1")}, [16]) = 5
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53308), sin_addr=inet_addr("127.0.0.1")}, [16]) = 6
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53320), sin_addr=inet_addr("127.0.0.1")}, [16]) = 7
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53324), sin_addr=inet_addr("127.0.0.1")}, [16]) = 8
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53334), sin_addr=inet_addr("127.0.0.1")}, [16]) = 9
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53338), sin_addr=inet_addr("127.0.0.1")}, [16]) = 15
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53342), sin_addr=inet_addr("127.0.0.1")}, [16]) = 17
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53348), sin_addr=inet_addr("127.0.0.1")}, [16]) = 19
+futex(0x7f6f31747a70, FUTEX_WAIT_PRIVATE, 2, NULL) = -1 EAGAIN (Resource temporarily unavailable)
+futex(0x7f6f31747a70, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, {sa_family=AF_INET, sin_port=htons(53354), sin_addr=inet_addr("127.0.0.1")}, [16]) = 21
+futex(0x5597da939060, FUTEX_WAKE_PRIVATE, 1) = 1
+futex(0x7f6f31747a70, FUTEX_WAKE_PRIVATE, 1) = 1
+accept(3, 
